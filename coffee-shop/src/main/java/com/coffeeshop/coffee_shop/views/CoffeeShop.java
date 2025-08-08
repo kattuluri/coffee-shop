@@ -1,14 +1,29 @@
 package com.coffeeshop.coffee_shop.views;
 
+import com.vaadin.flow.component.Html;
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.accordion.Accordion;
+import com.vaadin.flow.component.accordion.AccordionPanel;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.H3;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.Router;
+import com.vaadin.flow.router.RouterLink;
+import com.vaadin.flow.theme.lumo.LumoUtility;
 
 @Route("")
 
@@ -18,97 +33,257 @@ public class CoffeeShop extends VerticalLayout{
     private static double profit;
     private int coffee = 0;
     private int cookies = 0;
+    private int coffeeCost = 0;
+    private int cookieCost = 0;
+    private int tipAmount = 0;
+    private double totalCost = 0;
     private TextField coffeeField;
     private TextField cookieField;
     public CoffeeShop() {
         setAlignItems(Alignment.CENTER);
-        userInput(this);
+        dashboard(this);
     }
-    public void userInput(VerticalLayout layout) {
-        Span welcomeLabel = new Span("Welcome to the Coffee and Cookie Shop!");
-        Span priceLabel = new Span("We have coffee for $2.50 each and cookies for $1.50 each.");
+    public void dashboard(VerticalLayout layout) {
+        setSizeFull();
+        setPadding(false);
+        setSpacing(false);
+        setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);
+        setJustifyContentMode(FlexComponent.JustifyContentMode.START);
+        getStyle().set("font-family", "Arial, sans-serif");
 
-        Span coffeeLabel = new Span("How many coffees would you like to buy?");
-        this.coffeeField = new TextField();
-        
-        Span cookieLabel = new Span("How many cookies would you like to buy?");
-        this.cookieField = new TextField();
+        VerticalLayout imagePanel = new VerticalLayout();
+        imagePanel.addClassName(LumoUtility.Background.CONTRAST_5);
+        imagePanel.setWidth("100%");
+        imagePanel.setHeight("300px");
+        imagePanel.setPadding(false);
+        imagePanel.setSpacing(false);
+        imagePanel.getStyle().set("position", "relative"); 
+        imagePanel.getStyle().set("margin", "0"); 
 
-        Button submitButton = new Button("Add to Cart");
-        submitButton.addClickListener(event -> {
-            try {
-                int coffeeCount = Integer.parseInt(coffeeField.getValue());
-                int cookieCount = Integer.parseInt(cookieField.getValue());
-                addItemsToCart(coffeeCount, cookieCount, layout);
-            } catch (NumberFormatException ex) {
-                Notification.show("Please enter valid numbers for coffee and cookies.");
+        Image image = new Image("data:image/jpeg;base64,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", "coffee-image");
+        image.setWidth("100%");
+        image.setHeight("100%");
+        image.getStyle().set("object-fit", "cover");
+        image.getStyle().set("position", "absolute");
+        image.getStyle().set("top", "1");
+        image.getStyle().set("left", "0");
+        image.getStyle().set("z-index", "1");
+
+        HorizontalLayout headerLayout = new HorizontalLayout();
+        headerLayout.setWidthFull();
+        headerLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
+        headerLayout.setAlignItems(FlexComponent.Alignment.CENTER);
+        headerLayout.getStyle().set("position", "relative");
+        headerLayout.getStyle().set("z-index", "2");
+        headerLayout.addClassName(LumoUtility.Padding.SMALL);
+
+        H1 headerTitle = new H1("Welcome to the Coffee and Cookie Shop");
+        headerTitle.getStyle().set("align-self", "center");
+        headerTitle.addClassName(LumoUtility.Margin.SMALL);
+        headerTitle.getStyle().set("color", "white"); 
+        Button menuButton = new Button(VaadinIcon.MENU.create());
+        menuButton.addClassName(LumoUtility.Margin.SMALL);
+        menuButton.getStyle().set("background-color", "rgba(0, 0, 0, 0.5)"); 
+        menuButton.addClickListener(e -> getUI().ifPresent(ui -> {
+            layout.removeAll();
+            menuLayout(layout);
+        }));
+        headerLayout.add(headerTitle, menuButton);
+        imagePanel.add(image, headerLayout);
+
+        VerticalLayout aboutPanel = new VerticalLayout();
+        aboutPanel.addClassName(LumoUtility.Background.CONTRAST_5);
+        aboutPanel.setWidth("100%");
+        aboutPanel.setHeight("200px");
+        aboutPanel.setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER); 
+        aboutPanel.setAlignSelf(FlexComponent.Alignment.CENTER);
+        aboutPanel.add(new H2("About Us"));
+        aboutPanel.add("Welcome to our Coffee and Cookie Shop! We are dedicated to providing you with the best coffee and cookies in town. Our coffee is freshly brewed and our cookies are baked daily with care and dedication. We hope you enjoy your visit!");
+        aboutPanel.getStyle().set("font-family", "Arial, sans-serif"); 
+
+        VerticalLayout contactPanel = new VerticalLayout();
+        contactPanel.addClassName(LumoUtility.Background.CONTRAST_5);
+        contactPanel.setWidth("100%");
+        contactPanel.setHeight("200px");
+        contactPanel.setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER); 
+        contactPanel.setAlignSelf(FlexComponent.Alignment.CENTER);
+        contactPanel.add(new H2("Contact Us"));
+        contactPanel.add("If you have any questions or feedback, please feel free to reach out to us at 999-999-9999");
+        contactPanel.getStyle().set("font-family", "Arial, sans-serif"); 
+
+        layout.add(imagePanel, aboutPanel, contactPanel);
+        layout.setAlignItems(Alignment.CENTER);
+        layout.setJustifyContentMode(JustifyContentMode.CENTER);
+        layout.setWidth("100%");
+        layout.setHeight("100%");
+    }
+
+    public void menuLayout(VerticalLayout layout) {
+        setSizeFull();
+        setPadding(true);
+        setSpacing(true);
+
+        H1 header = new H1("Menu");
+        header.getStyle().set("text-align", "center");
+
+        Div navigation = new Div();
+        navigation.add(new Html("<strong></strong> -> Controllers -> SDB"));
+        navigation.getStyle().set("margin-bottom", "20px");
+        navigation.getStyle().set("text-align", "center");
+
+        Accordion menuAccordion = new Accordion();
+
+        VerticalLayout drinkLayout = new VerticalLayout();
+        Image coffeeImage = new Image("data:image/jpeg;base64,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", "Coffee Image");
+        coffeeImage.setWidth("32px");
+        coffeeImage.setHeight("32px");
+        coffeeImage.setVisible(false);
+        RouterLink coffeeLink = new RouterLink();
+        coffeeLink.add(new Span("Coffee"));
+        coffeeLink.add(coffeeImage);
+        drinkLayout.add(coffeeLink);
+        menuAccordion.close();
+
+        VerticalLayout foodLayout = new VerticalLayout();
+        Image cookieImage = new Image("data:image/png;base64,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", "Cookie");
+        cookieImage.setWidth("32px");
+        cookieImage.setHeight("32px");
+        cookieImage.setVisible(false);
+        RouterLink cookieLink = new RouterLink();
+        cookieLink.add(new Span("Cookie"));
+        cookieLink.add(cookieImage);
+        foodLayout.add(cookieLink);
+        menuAccordion.close();
+
+        menuAccordion.addOpenedChangeListener(event -> {
+            if (event.getOpenedPanel().isPresent()) {
+                AccordionPanel openedPanel = (AccordionPanel) event.getOpenedPanel().get();
+                String panelKey = "";
+                if (openedPanel.getSummaryText().equals("Drink")) {
+                    panelKey = "Drink";
+                } else if (openedPanel.getSummaryText().equals("Food")) {
+                    panelKey = "Food";
+                }
+                if ("Food".equals(panelKey)) {
+                    cookieImage.setVisible(true); 
+                } else {
+                    cookieImage.setVisible(false); 
+                }
+                if ("Drink".equals(panelKey)) {
+                    coffeeImage.setVisible(true); 
+                } else {
+                    coffeeImage.setVisible(false); 
+                }
+            } else {
+                coffeeImage.setVisible(false); 
+                cookieImage.setVisible(false); 
             }
         });
-        Button cancelButton = new Button("Cancel");
-        cancelButton.addClickListener(click -> {
+        menuAccordion.add("Drink", drinkLayout);
+        menuAccordion.add("Food", foodLayout);
+        Button cartButton = new Button("Cart");
+        cartButton.addClickListener(event -> {
+            layout.removeAll();
+            buyItems(layout);
+        });
+        Button backButton = new Button("Back");
+        backButton.addClickListener(event -> {
+            layout.removeAll();     
+            dashboard(layout);
+        });
+        layout.add(header, navigation, menuAccordion, cartButton, backButton);
+
+    }
+    public void buyItems(VerticalLayout layout) {
+        HorizontalLayout coffeeLayout = new HorizontalLayout();
+        Span coffeeLabel = new Span("Coffee");
+        this.coffeeField = new TextField();
+        TextField coffeePrice = new TextField();
+        coffeeLayout.add(coffeeLabel, coffeeField, coffeePrice);
+
+        HorizontalLayout cookieLayout = new HorizontalLayout();
+        Span cookieLabel = new Span("Cookie");
+        this.cookieField = new TextField();
+        TextField cookiePrice = new TextField();
+        cookieLayout.add(cookieLabel, cookieField, cookiePrice);
+
+        HorizontalLayout tipLayout = new HorizontalLayout();
+        Span tipLabel = new Span("Tip");
+        TextField tipField = new TextField();
+        tipLayout.add(tipLabel, tipField);
+
+        HorizontalLayout totalLayout = new HorizontalLayout();
+        Span totalLabel = new Span("Total");
+        TextField totalField = new TextField();
+
+        Button showPrices = new Button("Show Prices");
+        showPrices.addClickListener(click -> {
+            try {
+                int coffeeCount = Integer.parseInt(coffeeField.getValue());
+                coffeeCount = checkStock(coffeeCount, 0);
+                coffeePrice.setValue(coffeeCount * 3 + " $");
+                coffeeCost = coffeeCount * 3;
+                coffee = coffeeCount;
+            } catch (NumberFormatException ex) {
+                Notification.show("Please enter valid numbers for coffee");
+            }
+            try {
+                int cookieCount = Integer.parseInt(cookieField.getValue());
+                cookieCount = checkStock(cookieCount, 1);
+                cookiePrice.setValue(cookieCount * 2 + " $");
+                cookieCost = cookieCount * 2;
+                cookies = cookieCount;
+            } catch (NumberFormatException ex) {
+                Notification.show("Please enter valid numbers for cookies.");
+            }
+            try {
+                int tip = Integer.parseInt(tipField.getValue());
+                if (tip < 0) {
+                    Notification.show("Please enter a non-negative tip amount.");
+                    tipAmount = 0;
+                } else {
+                    tipAmount = tip;
+                }
+            } catch (NumberFormatException ex) {
+                Notification.show("Please enter a valid number for the tip.");
+                tipAmount = 0;
+            }
+
+            totalCost = coffeeCost + cookieCost + tipAmount;
+            totalField.setValue(totalCost + " $");
+            totalLayout.add(totalLabel, totalField);
+        });
+
+        Button orderButton = new Button("Order");
+        orderButton.addClickListener(click -> {
+            coffeeStock -= coffee;
+            cookieStock -= cookies;
+            profit += totalCost;
+            Notification.show("Thank you for your purchase! Total cost: $" + totalCost);
             coffee = 0;
             cookies = 0;
-            coffeeField.clear();
-            cookieField.clear();
-            Notification.show("Cart cleared.");
+            initializeStock();
+            layout.removeAll();
+            dashboard(layout);
         });
-        layout.add(welcomeLabel, priceLabel, coffeeLabel, coffeeField, cookieLabel, cookieField, submitButton, cancelButton);
+        layout.add(coffeeLayout, cookieLayout, tipLayout, totalLayout, showPrices, orderButton);
     }
-    public void addItemsToCart(int coffeeCount, int cookieCount, VerticalLayout layout) {
-        if (coffeeCount < 0 || cookieCount < 0) {
+    public int checkStock(int count, int indicator) {
+        if (count < 0) {
             Notification.show("Please enter non-negative numbers.");
-            return;
+            return 0;
         }
-        if (coffeeCount > coffeeStock) {
+        if (count > coffeeStock && indicator == 0) {
             Notification.show("Not enough coffee in stock. Available: " + coffeeStock);
-            coffeeCount = coffeeStock;
+            count = coffeeStock;
+            return count;
         }
-        if (cookieCount > cookieStock) {
+        if (count > cookieStock && indicator == 1) {
             Notification.show("Not enough cookies in stock. Available: " + cookieStock);
-            cookieCount = cookieStock;
+            count = cookieStock;
+            return count;
         }
-
-        coffee += coffeeCount;
-        cookies += cookieCount;
-
-        String message;
-        double totalCost = (coffee * 2.5) + (cookies * 1.5);
-        if (coffee > 0 && cookies == 0) {
-            message = "You have " + coffee + " coffee(s) in your cart for a total of $" + totalCost;
-        } else if (cookies > 0 && coffee == 0) {
-            message = "You have " + cookies + " cookie(s) in your cart for a total of $" + totalCost;
-        } else if (coffee > 0 && cookies > 0) {
-            message = "You have " + coffee + " coffee(s) and " + cookies + " cookie(s) in your cart for a total of $" + totalCost;
-        } else {
-            message = "No items in cart.";
-            Notification.show(message);
-            return;
-        }
-        ConfirmDialog dialog = new ConfirmDialog();
-        dialog.setHeader("Confirm Purchase");
-        dialog.setText(message + "\nWould you like to buy these items?");
-        dialog.setCancelable(true);
-        dialog.setConfirmText("Yes");
-        dialog.setCancelText("No");
-        dialog.addConfirmListener(confirm -> {
-                coffeeStock -= coffee;
-                cookieStock -= cookies;
-                profit += totalCost;
-                Notification.show("Thank you for your purchase! Total cost: $" + totalCost);
-                coffee = 0;
-                cookies = 0;
-                coffeeField.clear();
-                cookieField.clear();
-        });
-        dialog.addCancelListener(cancel -> {
-                Notification.show("Purchase cancelled.");
-                coffee = 0;
-                cookies = 0;
-                coffeeField.clear();
-                cookieField.clear();
-        });
-        dialog.open();
-        initializeStock();
+        return count;
     }
     public void initializeStock() {
         if (coffeeStock == 0) {

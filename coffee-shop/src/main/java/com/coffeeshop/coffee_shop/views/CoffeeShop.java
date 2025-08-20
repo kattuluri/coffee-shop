@@ -44,6 +44,8 @@ public class CoffeeShop extends VerticalLayout{
         dashboard(this);
     }
     public void dashboard(VerticalLayout layout) {
+        layout.getStyle().setBackground("#b8afa2ff");
+
         setSizeFull();
         setPadding(false);
         setSpacing(false);
@@ -80,7 +82,7 @@ public class CoffeeShop extends VerticalLayout{
         H1 headerTitle = new H1("Welcome to the Coffee and Cookie Shop");
         headerTitle.getStyle().set("align-self", "center");
         headerTitle.addClassName(LumoUtility.Margin.SMALL);
-        headerTitle.getStyle().set("color", "white"); 
+        headerTitle.getStyle().set("color", "#000000ff"); 
         Button menuButton = new Button(VaadinIcon.MENU.create());
         menuButton.addClassName(LumoUtility.Margin.SMALL);
         menuButton.getStyle().set("background-color", "rgba(0, 0, 0, 0.5)"); 
@@ -119,6 +121,8 @@ public class CoffeeShop extends VerticalLayout{
     }
 
     public void menuLayout(VerticalLayout layout) {
+        layout.getStyle().setBackground("#b8afa2ff");
+
         setSizeFull();
         setPadding(true);
         setSpacing(true);
@@ -195,6 +199,10 @@ public class CoffeeShop extends VerticalLayout{
 
     }
     public void buyItems(VerticalLayout layout) {
+        H1 header = new H1("Checkout");
+        layout.add(header);
+        layout.getStyle().setBackground("#b8afa2ff");
+
         HorizontalLayout coffeeLayout = new HorizontalLayout();
         Span coffeeLabel = new Span("Coffee");
         this.coffeeField = new TextField();

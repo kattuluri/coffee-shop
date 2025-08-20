@@ -64,6 +64,22 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<plugin>
+				<groupId>com.github.sherter</groupId>
+				<artifactId>maven-jekyll-plugin</artifactId>
+				<version>0.2.0</version>
+				<executions>
+					<execution>
+					  <goals>
+						<goal>build</goal>
+					  </goals>
+					  <configuration>
+						<sourceDirectory>${project.basedir}/src/main/frontend/themes/my-theme</sourceDirectory>
+						<outputDirectory>${project.basedir}/_site</outputDirectory>
+					  </configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 

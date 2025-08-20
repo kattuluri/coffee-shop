@@ -74,8 +74,8 @@
 						<goal>build</goal>
 					  </goals>
 					  <configuration>
-						<sourceDirectory>${project.basedir}/src/main/frontend/themes/my-theme</sourceDirectory>
-						<outputDirectory>${project.basedir}/_site</outputDirectory>
+						<sourceDirectory>coffee-shop/src/main/frontend/themes/my-theme</sourceDirectory>
+						<outputDirectory>$coffee-shop/_site</outputDirectory>
 					  </configuration>
 					</execution>
 				</executions>
